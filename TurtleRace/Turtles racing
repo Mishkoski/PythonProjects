@@ -1,0 +1,45 @@
+import turtle
+import random
+from tkinter import messagebox
+
+screen = turtle.Screen()
+screen.title("Race!")
+
+turtles = []
+locations = [150, 100, 50, 0, -50, -100]
+color = ['red', 'blue', "yellow", "green", "gray", 'purple']
+
+for i in range(6):
+    tim = turtle.Turtle()
+    tim.shape("turtle")
+    tim.penup()
+    tim.goto(-270, locations[i])
+    turtles.append(tim)
+    tim.fillcolor(color[i])
+
+speed = [random.randint(5, 20) for _ in range(6)]
+
+selected_color = screen.textinput("Select Turtle", "Choose your turtle color (red, blue, yellow, green, gray, purple): ").lower()
+
+while selected_color not in color:
+    selected_color = screen.textinput("Select Turtle", "Invalid color! Choose your turtle color: ").lower()
+
+def select_turtle(color):
+    global selected_turtle
+    selected_turtle = color
+
+
+while True:
+    for i in range(6):
+        turtles[i].forward(random.choice(speed))
+        if turtles[i].xcor() > 230:
+            if selected_color == turtles[i].fillcolor():
+                messagebox.showinfo("Final result", "Cogratulations! Your turtle won")
+            else:
+                messagebox.showinfo("Final result", "Oops! Your turtle lost")
+            break
+    if turtles[i].xcor() > 230:
+        break
+
+
+screen.exitonclick()
