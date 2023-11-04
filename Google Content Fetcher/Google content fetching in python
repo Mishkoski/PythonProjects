@@ -1,0 +1,44 @@
+import tkinter as tk
+from tkinter import messagebox
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import time
+
+def fetch_google_content():
+    query = entry.get()
+    if not query:
+        messagebox.showerror("Error", "Please enter a search query.")
+        return
+
+    driver = webdriver.Chrome()
+    driver.get("https://www.google.com/")
+    time.sleep(4)
+
+    search = driver.find_element(By.NAME, "q")
+    search.send_keys(query)
+    search.send_keys(Keys.ENTER)
+    time.sleep(5)
+
+    search_results = driver.find_elements(By.CSS_SELECTOR, 'div.tF2Cxc')
+    for result in search_results:
+        print(result.text)
+
+    driver.quit()
+
+screen = tk.Tk()
+screen.title("Google Content Fetcher")
+screen.geometry("500x320")
+screen.configure(bg = "black")
+
+image = tk.PhotoImage(file="google_logo.png")
+image_label = tk.Label(screen, image=image, bg="black")
+image_label.pack()
+
+entry = tk.Entry(screen, width=40, font=("Arial", 14))
+entry.pack(pady=20)
+
+fetch_button = tk.Button(screen, text="Fetch Google Content", command=fetch_google_content, bg="blue", fg="white", font=("Arial", 14))
+fetch_button.pack()
+
+screen.mainloop()
