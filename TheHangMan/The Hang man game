@@ -1,0 +1,138 @@
+import random
+import tkinter as tk
+from tkinter import messagebox
+
+screen = tk.Tk()
+screen.title("Hangman Game")
+stages = ['''
+   +---+
+   |    |
+        |
+        |
+        |
+        |
+   =========
+   ''', '''
+   +---+
+   |    |
+   O    |
+        |
+        |
+        |
+   =========
+   ''', '''
+   +---+
+   |   |
+   O   |
+   |   |
+       |
+       |
+   =========
+   ''', '''
+
+   +---+
+   |   |
+   O   |
+  /|   |
+       |
+       |
+   ========
+   ''', '''
+   +---+
+   |   |
+   O   |
+  /|\  |
+       |
+       |
+   =========
+   ''', '''
+   +---+
+   |   |
+   O   |
+  /|\  |
+  /    |
+       |
+   =========
+   ''', '''
+   +---+
+   |   |
+   O   |
+  /|\  |
+  / \  |
+       |
+   =========
+   ''', '''
+
+   ''']
+
+cities = ['london', 'tokyo', 'paris', 'sydney', 'washington', 'berlin', 'athens', 'skopje', 'philadelphia', 'boston']
+selected_word = random.choice(cities)
+guessed_letters = set()
+lives = 6
+
+guessed_letters_label = tk.Label(screen, text="Guessed Letters: ", font=("Arial", 16))
+guessed_letters_label.pack()
+
+guessed_letters_display = tk.Label(screen, text="", font=("Arial", 16))
+guessed_letters_display.pack()
+
+
+def update_guessed_letters_display():
+    guessed_letters_display.config(text=" ".join(sorted(guessed_letters)))
+
+
+def check_letter():
+    global lives
+    letter = entry.get().lower()
+    entry.delete(0, tk.END)
+
+    if letter in guessed_letters:
+        messagebox.showinfo("Hangman", "Letter already guessed.")
+    else:
+        guessed_letters.add(letter)
+        update_guessed_letters_display()
+
+        if letter in selected_word:
+            for i in range(len(selected_word)):
+                if selected_word[i] == letter:
+                    h[i].set(letter)
+            if all(letter.get() != '_' for letter in h):
+                messagebox.showinfo("Hangman", "Congratulations! You guessed the city!")
+        else:
+            lives -= 1
+            canvas.itemconfig(image_item, text=stages[6 - lives])
+
+            if lives == 0:
+                messagebox.showinfo("Hangman", f"Game Over! The city was: {selected_word.capitalize()}")
+                button_check.config(state=tk.DISABLED)
+        label_word.config(text=" ".join([letter.get() if letter.get() != '_' else '_' for letter in h]))
+
+    label_lives.config(text=f"Lives: {lives}")
+
+
+h = [tk.StringVar() for _ in range(len(selected_word))]
+for i in range(len(selected_word)):
+    h[i].set('_')
+
+canvas = tk.Canvas(screen, width=300, height=400)
+hangman_images = [stage.strip() for stage in stages]
+image_item = canvas.create_text(150, 200, anchor=tk.CENTER, text=hangman_images[6 - lives], font=("Courier", 14))
+canvas.pack()
+
+label_word = tk.Label(screen, text=" ".join([letter.get() for letter in h]), font=("Arial", 24))
+label_word.pack()
+
+label_lives = tk.Label(screen, text=f"Lives: {lives}", font=("Arial", 16))
+label_lives.pack()
+
+entry = tk.Entry(screen, font=("Arial", 16))
+entry.pack()
+
+button_check = tk.Button(screen, text="Check Letter", command=check_letter, font=("Arial", 16))
+button_check.pack()
+
+label_result = tk.Label(screen, text="", font=("Arial", 16))
+label_result.pack()
+
+update_guessed_letters_display()
+screen.mainloop()
