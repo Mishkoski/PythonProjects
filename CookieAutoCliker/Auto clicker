@@ -1,0 +1,53 @@
+import tkinter
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get("https://orteil.dashnet.org/cookieclicker/")
+time.sleep(5)
+
+language = driver.find_element(By.ID, "langSelect-EN")
+language.click()
+time.sleep(3)
+
+button = driver.find_element(By.ID, "bigCookie")
+cursor = driver.find_element(By.ID, "product0")
+grandma = driver.find_element(By.ID, "product1")
+farm = driver.find_element(By.ID, "product2")
+mine = driver.find_element(By.ID, 'product3')
+
+while True:
+    register = int(driver.find_element(By.ID, "cookies").text.split()[0])
+    cursor_price = int(driver.find_element(By.ID, "productPrice0").text)
+    grandma_price = int(driver.find_element(By.ID, "productPrice1").text)
+
+    try:
+        farm_price = int(driver.find_element(By.ID, "productPrice2").text)
+        if register >= farm_price:
+            farm.click()
+        else:
+            button.click()
+    except:
+        pass
+
+    try:
+        mine_price = int(driver.find_element(By.ID, 'productPrice3').text)
+        if register >= mine_price:
+            mine.click()
+        else:
+            button.click()
+    except:
+        pass
+
+    if register >= cursor_price:
+        cursor.click()
+    else:
+        button.click()
+
+    if register >= grandma_price:
+        grandma.click()
+    else:
+        button.click()
+
+time.sleep(100000)
